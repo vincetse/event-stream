@@ -1,0 +1,25 @@
+// https://www.blog.dsb.dev/2020/03/01/structuring-repositories-with-protocol-buffers.html
+syntax="proto3";
+
+package event;
+
+option go_package = "github.com/vincetse/event-stream/pkg/event/v1;event";
+
+import "google/protobuf/timestamp.proto";
+
+message Event {
+  // unique ID of this event
+  bytes uuid = 1;
+
+  // timestamp of event
+  google.protobuf.Timestamp event_time = 2;
+
+  // the number of times this event was processed
+  int64 nprocessed = 3;
+
+  // where the event was create
+  string source = 4;
+
+  // routing key used by producer
+  string routing_key = 5;
+}

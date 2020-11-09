@@ -1,0 +1,85 @@
+version: "3.7"
+services:
+
+  mq:
+    image: rabbitmq:3-alpine
+    networks:
+    - default
+
+  producer:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-producer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-fanout-exch
+    - --exchange-type
+    - fanout
+    - --routing-key
+    - hello
+    - --event-count
+    - "3600"
+
+  consumer-1:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-consumer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-fanout-exch
+    - --exchange-type
+    - fanout
+    - --queue-name
+    - hello-1
+
+  consumer-2:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-consumer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-fanout-exch
+    - --exchange-type
+    - fanout
+    - --queue-name
+    - hello-2
+
+  consumer-3:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-consumer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-fanout-exch
+    - --exchange-type
+    - fanout
+    - --queue-name
+    - hello-3

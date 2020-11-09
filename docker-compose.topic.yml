@@ -1,0 +1,217 @@
+version: "3.7"
+services:
+
+  mq:
+    image: rabbitmq:3-alpine
+    networks:
+    - default
+
+  producer-1:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-producer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-topic-exch
+    - --exchange-type
+    - topic
+    - --routing-key
+    - americas.south.brazil
+    - --event-count
+    - "3600"
+
+  producer-2:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-producer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-topic-exch
+    - --exchange-type
+    - topic
+    - --routing-key
+    - americas.north.mexico
+    - --event-count
+    - "3600"
+
+  producer-3:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-producer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-topic-exch
+    - --exchange-type
+    - topic
+    - --routing-key
+    - americas.north
+    - --event-count
+    - "3600"
+
+  producer-4:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-producer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-topic-exch
+    - --exchange-type
+    - topic
+    - --routing-key
+    - americas.north.canada
+    - --event-count
+    - "3600"
+
+  producer-5:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-producer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-topic-exch
+    - --exchange-type
+    - topic
+    - --routing-key
+    - asia.south.india
+    - --event-count
+    - "3600"
+
+  producer-6:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-producer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-topic-exch
+    - --exchange-type
+    - topic
+    - --routing-key
+    - americas
+    - --event-count
+    - "3600"
+
+  consumer-1:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-consumer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-topic-exch
+    - --exchange-type
+    - topic
+    - --routing-key
+    - "americas.south.*"
+    - --queue-name
+    - americas_south
+
+  consumer-2:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-consumer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-topic-exch
+    - --exchange-type
+    - topic
+    - --routing-key
+    - "americas.north.*"
+    - --queue-name
+    - americas_north
+
+  consumer-3:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-consumer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-topic-exch
+    - --exchange-type
+    - topic
+    - --routing-key
+    - "americas.central.*"
+    - --queue-name
+    - americas_central
+
+  consumer-4:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-consumer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --exchange-name
+    - my-topic-exch
+    - --exchange-type
+    - topic
+    - --routing-key
+    - "americas.#"
+    - --queue-name
+    - americas

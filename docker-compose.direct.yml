@@ -1,0 +1,39 @@
+version: "3.7"
+services:
+
+  mq:
+    image: rabbitmq:3-alpine
+    networks:
+    - default
+
+  producer:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-producer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --routing-key
+    - hello
+    - --event-count
+    - "3600"
+
+  consumer:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-consumer
+    - --uri
+    - amqp://guest:guest@mq:5672
+    - --queue-name
+    - hello

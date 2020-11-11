@@ -1,7 +1,7 @@
 package amqp
 
 import (
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 	log "github.com/sirupsen/logrus"
 	mq "github.com/streadway/amqp"
 	event "github.com/vincetse/event-stream/pkg/event/v1"
@@ -99,7 +99,7 @@ func (p *Consumer) Close() {
 	}
 }
 
-func (p *Consumer) Consume() {
+func (p *Consumer) Consume() (err error) {
 	ch := p.ch
 
 	deliveries, err := ch.Consume(
@@ -113,10 +113,11 @@ func (p *Consumer) Consume() {
 	)
 	if err != nil {
 		log.Debug(err)
-		return
+		return err
 	}
 
 	go handle(p.options.RoutingKey, deliveries, p.done)
+	return nil
 }
 
 func handle(routing_key string, deliveries <-chan mq.Delivery, done chan error) {
@@ -128,7 +129,9 @@ func handle(routing_key string, deliveries <-chan mq.Delivery, done chan error) 
 			log.Debugf("consumed event %s [routing-key=%-32s] [source-routing-key=%-32s]", e.GetId(), routing_key, e.GetRoutingKey())
 		}
 
-		d.Ack(false)
+		if err := d.Ack(false); err != nil {
+			log.Fatal(err)
+		}
 	}
 	log.Printf("handle: deliveries channel closed")
 	done <- nil

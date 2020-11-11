@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - main
+      - dev/*
   pull_request:
 jobs:
   golangci:
@@ -13,6 +14,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: install protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: "3.x"
+
+      - name: install protoc-gen-go
+        run: |
+          go get google.golang.org/protobuf/cmd/protoc-gen-go
+          go install google.golang.org/protobuf/cmd/protoc-gen-go
+
+      - name: generate protobuf code
+        run: |
+          make gen
+          # got to remove the packages we just installed so that
+          # the linter doesn't complain.
+          sudo rm -rf ../../../go/pkg/mod/google.golang.org/protobuf@v1.25.0
+
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
         with:
@@ -26,4 +45,3 @@ jobs:
           # args: --issues-exit-code=0
 
           # Optional: show only new issues if it's a pull request. The default value is `false`.
-          # only-new-issues: true

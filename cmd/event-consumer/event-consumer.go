@@ -13,8 +13,12 @@ func main() {
 	myflags.Parse()
 
 	q := amqp.NewConsumer(options)
-	q.Open()
-	q.Consume()
+	if err := q.Open(); err != nil {
+		log.Fatal(err)
+	}
+	if err := q.Consume(); err != nil {
+		log.Fatal(err)
+	}
 
 	select {}
 }

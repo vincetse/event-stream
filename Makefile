@@ -8,7 +8,7 @@ build:
 	$(go) build ./cmd/event-consumer/...
 
 gen:
-	protoc --go_out=$(GOPATH)/src ./pkg/event/v1/event.proto
+	protoc --go_out=. --go_opt=paths=source_relative ./pkg/event/v1/event.proto
 
 docker:
 	docker build --rm -t data-stream .

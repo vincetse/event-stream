@@ -31,7 +31,10 @@ func main() {
 	var i int64
 	for i = 0; i < options.EventCount; i++ {
 		e := gen.NewEvent()
-		q.Publish(e)
+		err := q.Publish(e)
+		if err != nil {
+			log.Error(err)
+		}
 		// pause so we don't hog the CPU
 		time.Sleep(0.5 * 1e9)
 	}

@@ -1,5 +1,6 @@
-./event-producer
-./event-consumer
+/event-producer
+/event-consumer
+*.pb.go
 
 # Created by https://www.toptal.com/developers/gitignore/api/go,linux,macos,vim
 # Edit at https://www.toptal.com/developers/gitignore?templates=go,linux,macos,vim

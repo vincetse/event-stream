@@ -1,7 +1,7 @@
 package amqp
 
 import (
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 	log "github.com/sirupsen/logrus"
 	mq "github.com/streadway/amqp"
 	event "github.com/vincetse/event-stream/pkg/event/v1"
@@ -24,10 +24,11 @@ func (p *Producer) Open() (err error) {
 	p.conn = Dial(p.options.Uri)
 	ch, err := p.conn.Channel()
 	if err == nil {
-		log.Infof("got channel")
-		p.ch = ch
+		log.Info(err)
+		return err
 	}
-	// TODO handle error
+	log.Infof("got channel")
+	p.ch = ch
 
 	// use the default exchange if none is give in the command-line
 	// parameter.
@@ -60,10 +61,14 @@ func (p *Producer) Close() {
 	}
 }
 
-func (p *Producer) Publish(e *event.Event) {
+func (p *Producer) Publish(e *event.Event) (err error) {
 	e.RoutingKey = p.options.RoutingKey
-	data, err := proto.Marshal(e)
 	ch := p.ch
+	data, err := proto.Marshal(e)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
 
 	err = ch.Publish(
 		p.options.ExchangeName,
@@ -81,4 +86,5 @@ func (p *Producer) Publish(e *event.Event) {
 	} else {
 		log.Debugf("publishing event %s [routing-key=%-32s]", e.GetId(), p.options.RoutingKey)
 	}
+	return err
 }

@@ -29,11 +29,16 @@ func main() {
 	gen := NewEventGenerator(hostname)
 
 	var i int64
+	var nerrs int64 = 0
 	for i = 0; i < options.EventCount; i++ {
 		e := gen.NewEvent()
 		err := q.Publish(e)
 		if err != nil {
 			log.Error(err)
+			nerrs++
+			if nerrs > 10 {
+				log.Fatalf("giving up after %d errors", nerrs)
+			}
 		}
 		// pause so we don't hog the CPU
 		time.Sleep(0.5 * 1e9)

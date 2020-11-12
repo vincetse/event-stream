@@ -17,7 +17,7 @@ func setupProducerFlags(f *ProducerFlags, prefix string) {
 	pflag.StringVar(&f.ExchangeName, prefix + "exchange-name", "", "Producer AMPQ exchange name")
 	pflag.StringVar(&f.ExchangeType, prefix + "exchange-type", "direct", "Producer AMPQ exchange type")
 	pflag.StringVar(&f.RoutingKey, prefix + "routing-key", "", "Producer AMPQ routing-key")
-	pflag.Int64Var(&f.EventCount, "event-count", 0, "Event count")
+	pflag.Int64Var(&f.EventCount, prefix + "event-count", 0, "Event count (no effect for processors")
 }
 
 func NewProducerFlags(prefix string) *ProducerFlags {

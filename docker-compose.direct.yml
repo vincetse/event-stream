@@ -19,9 +19,47 @@ services:
     - --uri
     - amqp://guest:guest@mq:5672
     - --routing-key
-    - hello
+    - hello-for-processor-a
     - --event-count
     - "3600"
+
+  processor_a:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-processor
+    - --consumer-uri
+    - amqp://guest:guest@mq:5672
+    - --consumer-queue-name
+    - hello-for-processor-a
+    - --producer-uri
+    - amqp://guest:guest@mq:5672
+    - --producer-routing-key
+    - hello-for-processor-b
+
+  processor_b:
+    depends_on:
+    - mq
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+    - default
+    command:
+    - /event-processor
+    - --consumer-uri
+    - amqp://guest:guest@mq:5672
+    - --consumer-queue-name
+    - hello-for-processor-b
+    - --producer-uri
+    - amqp://guest:guest@mq:5672
+    - --producer-routing-key
+    - hello-for-consumer
 
   consumer:
     depends_on:
@@ -36,4 +74,4 @@ services:
     - --uri
     - amqp://guest:guest@mq:5672
     - --queue-name
-    - hello
+    - hello-for-consumer

@@ -20,10 +20,10 @@ func NewProducer(o *opts.ProducerFlags) *Producer {
 	}
 }
 
-func (p *Producer) Open() (err error) {
+func (p *Producer) Open() (error) {
 	p.conn = Dial(p.options.Uri)
 	ch, err := p.conn.Channel()
-	if err == nil {
+	if err != nil {
 		log.Info(err)
 		return err
 	}

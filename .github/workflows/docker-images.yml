@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - dev/*
 env:
   IMAGE: ghcr.io/${{ github.repository }}
 jobs:

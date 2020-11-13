@@ -35,6 +35,16 @@ jobs:
       - name: Available platforms
         run: echo ${{ steps.qemu.outputs.platforms }}
 
+      - name: Create image version
+        shell: bash
+        run: |
+          VERSION=${GITHUB_REF##*/}
+          if [[ "${VERSION}}" == "main" ]]; then
+            VERSION=latest
+          fi
+          echo "::set-output name=image_version::${VERSION}"
+        id: image_version
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
@@ -42,4 +52,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64/v8,linux/arm/v6
           push: true
-          tags: ${{ env.IMAGE }}
+          tags: ${{ env.IMAGE }}:${{ steps.image_version.outputs.image_version }}

@@ -1,4 +1,4 @@
-FROM golang:1.15-alpine AS builder
+FROM public.ecr.aws/docker/library/golang:1.21-alpine AS builder
 MAINTAINER vincetse@users.noreply.github.com
 
 RUN \
@@ -11,8 +11,7 @@ RUN \
     protobuf-dev \
     protoc \
   && \
-  go get google.golang.org/protobuf/cmd/protoc-gen-go && \
-  go install google.golang.org/protobuf/cmd/protoc-gen-go
+  go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 
 WORKDIR /go/src/github.com/vincetse/event-stream
 COPY . ./

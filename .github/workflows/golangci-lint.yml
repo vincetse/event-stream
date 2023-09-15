@@ -8,9 +8,6 @@ on:
       - main
       - dev/*
   pull_request:
-env:
-  GO_PATH: '/tmp/go'
-
 jobs:
   golangci:
     name: lint
@@ -18,22 +15,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-#      - name: install protoc
-#        uses: arduino/setup-protoc@v2
-#        with:
-#          version: "23.x"
-#          repo-token: ${{ secrets.GITHUB_TOKEN }}
-#
-#      - name: install protoc-gen-go
-#        run: |
-#          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-#
-#      - name: generate protobuf code
-#        run: |
-#          make gen
-#          # got to remove the packages we just installed so that
-#          # the linter doesn't complain.
-#          sudo rm -rf ../../../go/pkg/mod/google.golang.org/protobuf@v1.25.0
+      - name: install protoc
+        uses: arduino/setup-protoc@v2
+        with:
+          version: "23.x"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: install protoc-gen-go
+        run: |
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+
+      - name: generate protobuf code
+        run: |
+          export PATH=../../../go/bin:${PATH}
+          protoc --go_out=. --go_opt=paths=source_relative ./pkg/event/v1/event.proto
+          # got to remove the packages we just installed so that
+          # the linter doesn't complain.
+          sudo rm -rf ../../../go/pkg/mod/google.golang.org/protobuf*
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3.7.0

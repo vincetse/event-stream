@@ -1,3 +1,4 @@
+export GO_PATH := /tmp/go
 export PATH := $(GO_PATH)/bin:$(PATH)
 
 PROTOC_OUT = ./build/gen

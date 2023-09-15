@@ -1,3 +1,5 @@
+export PATH := $(GO_PATH)/bin:$(PATH)
+
 PROTOC_OUT = ./build/gen
 go = CGO_ENABLED=0 go
 

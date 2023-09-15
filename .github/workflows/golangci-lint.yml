@@ -8,6 +8,9 @@ on:
       - main
       - dev/*
   pull_request:
+env:
+  GO_PATH: '/tmp/go'
+
 jobs:
   golangci:
     name: lint

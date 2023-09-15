@@ -13,17 +13,17 @@ jobs:
     name: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: install protoc
-        uses: arduino/setup-protoc@v1
+        uses: arduino/setup-protoc@v2
         with:
-          version: "3.x"
+          version: "23.x"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: install protoc-gen-go
         run: |
-          go get google.golang.org/protobuf/cmd/protoc-gen-go
-          go install google.golang.org/protobuf/cmd/protoc-gen-go
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 
       - name: generate protobuf code
         run: |
@@ -33,10 +33,10 @@ jobs:
           sudo rm -rf ../../../go/pkg/mod/google.golang.org/protobuf@v1.25.0
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v3.7.0
         with:
           # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
-          version: v1.29
+          version: v1.54.2
 
           # Optional: working directory, useful for monorepos
           # working-directory: somedir
